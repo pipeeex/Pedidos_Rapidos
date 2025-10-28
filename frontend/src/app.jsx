@@ -27,7 +27,7 @@ export default function App() {
               }`
             }
           >
-            Panel Admin
+            Panel Admin    
           </NavLink>
         </nav>
 
