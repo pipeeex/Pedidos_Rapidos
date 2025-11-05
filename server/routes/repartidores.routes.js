@@ -4,7 +4,10 @@ const {
   obtenerUbicacionesRepartidores
 } = require('../controllers/repartidores.controller');
 
-// Ruta: GET /api/repartidores/ubicaciones
+// Ruta original
 router.get('/ubicaciones', obtenerUbicacionesRepartidores);
+
+// 🔹 Nueva ruta compatible con el frontend
+router.get('/', obtenerUbicacionesRepartidores);
 
 module.exports = router;
