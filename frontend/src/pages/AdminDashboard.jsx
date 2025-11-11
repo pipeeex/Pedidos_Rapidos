@@ -1,119 +1,158 @@
-// src/pages/AdminDashboard.jsx
-import React, { useState, useEffect } from "react";
-import PaquetesTable from "../components/PaquetesTable";
-import MapaRepartidores from "../components/MapaRepartidores";
-import PaqueteForm from "../components/PaqueteForm";
+import React, { useEffect, useState } from "react";
 import {
   obtenerPaquetes,
-  crearPaquete,
   obtenerRepartidores,
-} from "../services/api";
+  crearPaquete,
+  crearRepartidor,
+  actualizarEstadoPaquete,
+} from "../services/api.js";
+import PaqueteForm from "../components/PaqueteForm.jsx";
+import PaquetesTable from "../components/PaquetesTable.jsx";
+import RepartidorForm from "../components/RepartidorForm.jsx";
 
 export default function AdminDashboard() {
-  
-  const [paquetes, setPaquetes] = useState([
-    {guia: "PKG001", remitente: "Juan Pérez", destinatario: "María López", estado: "En ruta" },
-    {guia: "PKG002", remitente: "Carlos Ruiz", destinatario: "Ana Torres", estado: "Entregado" },
-    {guia: "PKG003", remitente: "Laura Gómez", destinatario: "Pedro Sánchez", estado: "Pendiente" },
-  ]);
+  const [paquetes, setPaquetes] = useState([]);
   const [repartidores, setRepartidores] = useState([]);
-  const [nuevoPaquete, setNuevoPaquete] = useState({
-    destinatario: "",
-    remitente: "",
-    estado: "En tránsito",
-  });
+  const [loading, setLoading] = useState(true);
+
+  const cargarDatos = async () => {
+    try {
+      setLoading(true);
+      const [paquetesData, repartidoresData] = await Promise.all([
+        obtenerPaquetes(),
+        obtenerRepartidores(),
+      ]);
+      setPaquetes(paquetesData);
+      setRepartidores(repartidoresData);
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     cargarDatos();
   }, []);
 
-  const cargarDatos = async () => {
-    const [p, r] = await Promise.all([
-      obtenerPaquetes(),
-      obtenerRepartidores(),
-    ]);
-    setPaquetes(p);
-    setRepartidores(r);
-  };
-
-  const handleCrear = async (e) => {
-    e.preventDefault();
-    await crearPaquete(nuevoPaquete);
-    setNuevoPaquete({ destinatario: "", remitente: "", estado: "En tránsito" });
-    await cargarDatos();
-    if (!nuevoPaquete.remitente || !nuevoPaquete.destinatario) {
-      alert("Por favor completa todos los campos");
-      return;
+  const handleCrearPaquete = async (paquete) => {
+    try {
+      await crearPaquete(paquete);
+      alert("✅ Paquete creado correctamente");
+      cargarDatos();
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error al crdoear paquete: " + err.message);
     }
   };
 
+  const handleCrearRepartidor = async (repartidor) => {
+    try {
+      await crearRepartidor(repartidor);
+      alert("✅ Repartidor creado correctamente");
+      cargarDatos();
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error al crear repartidor: " + err.message);
+    }
+  };
+
+  const handleActualizarEstado = async (numeroGuia, nuevoEstado) => {
+  try {
+    await actualizarEstadoPaquete(numeroGuia, { estado: nuevoEstado });
+    alert("🟢 Estado del paquete actualizado");
+    cargarDatos();
+  } catch (error) {
+    console.error(error);
+    alert("❌ No se pudo actualizar el estado del paquete");
+  }
+};
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-neutral-950 text-white">
+        <p className="text-xl text-sky-400 animate-pulse">
+          Cargando datos del administrador...
+        </p>
+      </div>
+    );
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-sky-400 mb-6 text-center">
+    <div className="min-h-screen bg-neutral-950 text-white p-10 flex flex-col gap-10">
+      <h1 className="text-3xl font-bold text-center text-sky-400 mb-4">
         Panel de Administración
       </h1>
 
-      {/* Formulario */}
-      <form
-        onSubmit={handleCrear}
-        className="bg-neutral-800 p-6 rounded-lg max-w-lg mx-auto mb-8"
-      >
-        
+      {/* FORMULARIO DE PAQUETES */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+          <PaqueteForm
+            onCrearPaquete={handleCrearPaquete}   // ✅ ahora coincide
+            repartidores={repartidores}
+          />
 
-        <input
-          type="text"
-          placeholder="Nombre destinatario"
-          value={nuevoPaquete.nombreDestinatario}
-          onChange={(e) =>
-            setNuevoPaquete({ ...nuevoPaquete, nombreDestinatario: e.target.value })
-          }
-          className="w-full mb-3 px-3 py-2 rounded bg-neutral-700 text-white"
-        />
+        </div>
 
-        <input
-          type="text"
-          placeholder="Remitente"
-          value={nuevoPaquete.remitente}
-          onChange={(e) =>
-            setNuevoPaquete({ ...nuevoPaquete, remitente: e.target.value })
-          }
-          className="w-full mb-3 px-3 py-2 rounded bg-neutral-700 text-white"
-        />
-        <select
-          value={nuevoPaquete.estado}
-          onChange={(e) =>
-            setNuevoPaquete({ ...nuevoPaquete, estado: e.target.value })
-          }
-          className="w-full mb-3 px-3 py-2 rounded bg-neutral-700 text-white"
-        >
-          <option>En tránsito</option>
-          <option>Entregado</option>
-          <option>Pendiente</option>
-        </select>
-        <button
-          type="submit"
-          className="w-full py-2 bg-sky-600 hover:bg-sky-500 rounded text-white"
-        >
-          Crear paquete
-        </button>
-      </form>
+        <div className="bg-neutral-900 rounded-2xl shadow-lg p-4">
+          <h2 className="text-xl font-semibold mb-3 text-sky-400 text-center">
+            Paquetes registrados
+          </h2>
+          <div className="overflow-x-auto">
+            <PaquetesTable
+              paquetes={paquetes}
+              onActualizarEstado={handleActualizarEstado}
+            />
+          </div>
+        </div>
+      </div>
 
-      {/* Tabla de paquetes */}
-      <PaquetesTable paquetes={paquetes} />
+      {/* FORMULARIO Y LISTA DE REPARTIDORES */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-neutral-900 p-6 rounded-2xl shadow-lg">
+        {/* Formulario */}
+        <div>
+          <RepartidorForm onSubmit={handleCrearRepartidor} />
+        </div>
 
-
-      {/* Repartidores */}
-      <div className="mt-10">
-        <h2 className="text-2xl font-semibold text-sky-400 mb-3">
-          Repartidores activos
-        </h2>
-        <ul className="bg-neutral-800 p-4 rounded-lg">
-          {repartidores.map((r) => (
-            <li key={r._id} className="border-b border-neutral-700 py-2">
-              {r.nombre} — 📍 {r.ubicacion?.lat}, {r.ubicacion?.lng}
-            </li>
-          ))}
-        </ul>
+        {/* Tabla */}
+        <div>
+          <h3 className="text-xl font-semibold text-center text-sky-400 mb-4">
+            Lista de repartidores
+          </h3>
+          {repartidores.length === 0 ? (
+            <p className="text-gray-400 text-center">
+              No hay repartidores registrados.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full bg-neutral-800 text-white rounded-lg overflow-hidden">
+                <thead className="bg-sky-600">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Nombre</th>
+                    <th className="px-4 py-2 text-left">Teléfono</th>
+                    <th className="px-4 py-2 text-left">Identificación</th>
+                    <th className="px-4 py-2 text-left">Ubicación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {repartidores.map((r) => (
+                    <tr key={r._id} className="border-b border-neutral-700">
+                      <td className="px-4 py-2">{r.nombre}</td>
+                      <td className="px-4 py-2">{r.telefono}</td>
+                      <td className="px-4 py-2">
+                        {r.identificacion || (
+                          <span className="text-gray-500">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-400">
+                        lat: {r.ubicacion?.lat ?? 0}, lng: {r.ubicacion?.lng ?? 0}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

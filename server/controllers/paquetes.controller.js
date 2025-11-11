@@ -33,9 +33,12 @@ const obtenerPaquetes = async (req, res) => {
 const obtenerPaquetePorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const paquete = await Paquete.findOne({
-      $or: [{ _id: id }, { numeroGuia: id }]
-    }).populate('repartidorAsignado');
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'ID inválido para ObjectId' });
+    }
+
+    const paquete = await Paquete.findById(id).populate('repartidorAsignado');
 
     if (!paquete) {
       return res.status(404).json({ message: 'Paquete no encontrado' });
@@ -48,16 +51,13 @@ const obtenerPaquetePorId = async (req, res) => {
   }
 };
 
-/**
- * Actualizar el estado de un paquete
- */
 const actualizarEstadoPaquete = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { numeroGuia } = req.params;
     const { estado } = req.body;
 
-    const paqueteActualizado = await Paquete.findByIdAndUpdate(
-      id,
+    const paqueteActualizado = await Paquete.findOneAndUpdate(
+      { numeroGuia },
       { estado },
       { new: true, runValidators: true }
     );
@@ -73,9 +73,27 @@ const actualizarEstadoPaquete = async (req, res) => {
   }
 };
 
+
+const obtenerPaquetePorNumeroGuia = async (req, res) => {
+  try {
+    const { numeroGuia } = req.params;
+    const paquete = await Paquete.findOne({ numeroGuia }).populate('repartidorAsignado');
+
+    if (!paquete) {
+      return res.status(404).json({ message: 'Paquete no encontrado' });
+    }
+
+    res.json(paquete);
+  } catch (error) {
+    console.error('Error al buscar el paquete:', error);
+    res.status(500).json({ message: 'Error al buscar el paquete', error });
+  }
+};
+
 module.exports = {
   crearPaquete,
   obtenerPaquetes,
   obtenerPaquetePorId,
-  actualizarEstadoPaquete
+  actualizarEstadoPaquete,
+  obtenerPaquetePorNumeroGuia
 };

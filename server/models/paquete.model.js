@@ -24,8 +24,8 @@ const paqueteSchema = new mongoose.Schema({
   },
   estado: {
     type: String,
-    enum: ['Pendiente', 'En transito', 'Entregado'],
-    default: 'Pendiente'
+    enum: ["Pendiente", "En tránsito", "Entregado"],
+    default: "Pendiente",
   },
   repartidorAsignado: {
     type: mongoose.Schema.Types.ObjectId,

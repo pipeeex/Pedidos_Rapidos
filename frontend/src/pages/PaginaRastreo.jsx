@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { buscarPaquete } from "../services/api";
 
+
 export default function PaginaRastreo() {
   const [codigo, setCodigo] = useState("");
   const [paquete, setPaquete] = useState(null);
