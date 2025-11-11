@@ -1,5 +1,8 @@
 // src/pages/AdminDashboard.jsx
 import React, { useState, useEffect } from "react";
+import PaquetesTable from "../components/PaquetesTable";
+import MapaRepartidores from "../components/MapaRepartidores";
+import PaqueteForm from "../components/PaqueteForm";
 import {
   obtenerPaquetes,
   crearPaquete,
@@ -7,11 +10,16 @@ import {
 } from "../services/api";
 
 export default function AdminDashboard() {
-  const [paquetes, setPaquetes] = useState([]);
+  
+  const [paquetes, setPaquetes] = useState([
+    {guia: "PKG001", remitente: "Juan Pérez", destinatario: "María López", estado: "En ruta" },
+    {guia: "PKG002", remitente: "Carlos Ruiz", destinatario: "Ana Torres", estado: "Entregado" },
+    {guia: "PKG003", remitente: "Laura Gómez", destinatario: "Pedro Sánchez", estado: "Pendiente" },
+  ]);
   const [repartidores, setRepartidores] = useState([]);
   const [nuevoPaquete, setNuevoPaquete] = useState({
-    nombreDestinatario: "",
-    direccion: "",
+    destinatario: "",
+    remitente: "",
     estado: "En tránsito",
   });
 
@@ -31,8 +39,12 @@ export default function AdminDashboard() {
   const handleCrear = async (e) => {
     e.preventDefault();
     await crearPaquete(nuevoPaquete);
-    setNuevoPaquete({ nombreDestinatario: "", direccion: "", estado: "En tránsito" });
+    setNuevoPaquete({ destinatario: "", remitente: "", estado: "En tránsito" });
     await cargarDatos();
+    if (!nuevoPaquete.remitente || !nuevoPaquete.destinatario) {
+      alert("Por favor completa todos los campos");
+      return;
+    }
   };
 
   return (
@@ -46,6 +58,8 @@ export default function AdminDashboard() {
         onSubmit={handleCrear}
         className="bg-neutral-800 p-6 rounded-lg max-w-lg mx-auto mb-8"
       >
+        
+
         <input
           type="text"
           placeholder="Nombre destinatario"
@@ -55,12 +69,13 @@ export default function AdminDashboard() {
           }
           className="w-full mb-3 px-3 py-2 rounded bg-neutral-700 text-white"
         />
+
         <input
           type="text"
-          placeholder="Dirección"
-          value={nuevoPaquete.direccion}
+          placeholder="Remitente"
+          value={nuevoPaquete.remitente}
           onChange={(e) =>
-            setNuevoPaquete({ ...nuevoPaquete, direccion: e.target.value })
+            setNuevoPaquete({ ...nuevoPaquete, remitente: e.target.value })
           }
           className="w-full mb-3 px-3 py-2 rounded bg-neutral-700 text-white"
         />
@@ -84,26 +99,8 @@ export default function AdminDashboard() {
       </form>
 
       {/* Tabla de paquetes */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-neutral-800 rounded-lg overflow-hidden">
-          <thead className="bg-neutral-700">
-            <tr>
-              <th className="p-3 text-left">Destinatario</th>
-              <th className="p-3 text-left">Dirección</th>
-              <th className="p-3 text-left">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paquetes.map((p) => (
-              <tr key={p._id} className="border-b border-neutral-700">
-                <td className="p-3">{p.nombreDestinatario}</td>
-                <td className="p-3">{p.direccion}</td>
-                <td className="p-3 text-sky-300">{p.estado}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <PaquetesTable paquetes={paquetes} />
+
 
       {/* Repartidores */}
       <div className="mt-10">
