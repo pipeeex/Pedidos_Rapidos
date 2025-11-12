@@ -10,6 +10,18 @@ export async function obtenerPaquetes() {
   return await res.json();
 }
 
+export const eliminarPaquete = async (numeroGuia) => {
+  const response = await fetch(`http://localhost:5000/api/paquetes/${numeroGuia}`, {
+    method: 'DELETE',
+  });
+  
+  if (!response.ok) {
+    throw new Error('Error al eliminar el paquete');
+  }
+  
+  return response.json();
+};
+
 
 export async function crearPaquete(data) {
   const res = await fetch("http://localhost:5000/api/paquetes", {

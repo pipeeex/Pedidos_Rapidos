@@ -7,6 +7,7 @@ export default function RepartidorForm({ onSubmit }) {
     identificacion: "",
     lat: "",
     lng: "",
+    repartidorAsignado: "",
   });
 
   const handleChange = (e) => {

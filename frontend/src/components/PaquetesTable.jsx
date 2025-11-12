@@ -1,7 +1,7 @@
 import { actualizarEstadoPaquete } from "../services/api";
 import React from "react";
 
-export default function PaquetesTable({ paquetes, onActualizarEstado }) {
+export default function PaquetesTable({ paquetes, onActualizarEstado, onEliminarPaquete }) {
   const handleEstadoChange = (numeroGuia, nuevoEstado) => {
     onActualizarEstado(numeroGuia, nuevoEstado);
   };
@@ -32,6 +32,13 @@ export default function PaquetesTable({ paquetes, onActualizarEstado }) {
                 <option value="En tránsito">En tránsito</option>
                 <option value="Entregado">Entregado</option>
               </select>
+              <button
+                onClick={() => onEliminarPaquete(p.numeroGuia)}
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                title="Eliminar paquete"
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         ))}

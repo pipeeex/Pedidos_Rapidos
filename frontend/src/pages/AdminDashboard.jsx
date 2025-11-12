@@ -5,6 +5,7 @@ import {
   crearPaquete,
   crearRepartidor,
   actualizarEstadoPaquete,
+  eliminarPaquete, // ✅ Agrega esta función
 } from "../services/api.js";
 import PaqueteForm from "../components/PaqueteForm.jsx";
 import PaquetesTable from "../components/PaquetesTable.jsx";
@@ -42,7 +43,7 @@ export default function AdminDashboard() {
       cargarDatos();
     } catch (err) {
       console.error(err);
-      alert("❌ Error al crdoear paquete: " + err.message);
+      alert("❌ Error al crear paquete: " + err.message);
     }
   };
 
@@ -58,15 +59,29 @@ export default function AdminDashboard() {
   };
 
   const handleActualizarEstado = async (numeroGuia, nuevoEstado) => {
-  try {
-    await actualizarEstadoPaquete(numeroGuia, { estado: nuevoEstado });
-    alert("🟢 Estado del paquete actualizado");
-    cargarDatos();
-  } catch (error) {
-    console.error(error);
-    alert("❌ No se pudo actualizar el estado del paquete");
-  }
-};
+    try {
+      await actualizarEstadoPaquete(numeroGuia, { estado: nuevoEstado });
+      alert("🟢 Estado del paquete actualizado");
+      cargarDatos();
+    } catch (error) {
+      console.error(error);
+      alert("❌ No se pudo actualizar el estado del paquete");
+    }
+  };
+
+  // ✅ Nueva función para eliminar paquete
+  const handleEliminarPaquete = async (numeroGuia) => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este paquete?")) {
+      try {
+        await eliminarPaquete(numeroGuia);
+        alert("🗑️ Paquete eliminado correctamente");
+        cargarDatos();
+      } catch (error) {
+        console.error(error);
+        alert("❌ Error al eliminar el paquete");
+      }
+    }
+  };
 
   if (loading)
     return (
@@ -87,10 +102,9 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
           <PaqueteForm
-            onCrearPaquete={handleCrearPaquete}   // ✅ ahora coincide
+            onCrearPaquete={handleCrearPaquete}
             repartidores={repartidores}
           />
-
         </div>
 
         <div className="bg-neutral-900 rounded-2xl shadow-lg p-4">
@@ -101,6 +115,7 @@ export default function AdminDashboard() {
             <PaquetesTable
               paquetes={paquetes}
               onActualizarEstado={handleActualizarEstado}
+              onEliminarPaquete={handleEliminarPaquete} // ✅ Pasa la función como prop
             />
           </div>
         </div>

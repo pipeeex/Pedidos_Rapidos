@@ -62,7 +62,7 @@ export default function PaqueteForm({ onCrearPaquete, repartidores }) {
       destinatario: { nombre: "", direccion: "", telefono: "" },
       dimensiones: { peso: "", largo: "", ancho: "", alto: "" },
       descripcion: "",
-      repartidor: "",
+      repartidorAsignado: "",
     });
   };
 
@@ -209,8 +209,8 @@ export default function PaqueteForm({ onCrearPaquete, repartidores }) {
       <div>
         <label className="block text-sm mb-1">Asignar repartidor</label>
         <select
-          name="repartidor"
-          value={formData.repartidor}
+          name="repartidorAsignado"
+          value={formData.repartidorAsignado}
           onChange={handleChange}
           className="w-full p-2 rounded bg-neutral-700 border border-neutral-600"
         >

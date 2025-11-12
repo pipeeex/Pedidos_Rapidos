@@ -7,6 +7,8 @@ const crearPaquete = async (req, res) => {
   try {
     const nuevoPaquete = new Paquete(req.body);
     const paqueteGuardado = await nuevoPaquete.save();
+    const paqueteConRepartidor = await paqueteGuardado.populate("repartidorAsignado"); // 👈 Para que lo devuelva con info del repartidor
+    res.status(201).json(paqueteConRepartidor);
     res.status(201).json(paqueteGuardado);
   } catch (error) {
     console.error('❌ Error al crear el paquete:', error);
