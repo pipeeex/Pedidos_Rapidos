@@ -92,10 +92,34 @@ const obtenerPaquetePorNumeroGuia = async (req, res) => {
   }
 };
 
+const eliminarPaquete = async (req, res) => {
+  try {
+    const { numeroGuia } = req.params;
+
+    console.log("👉 Intentando eliminar paquete con númeroGuia:", numeroGuia);
+
+    const eliminado = await Paquete.findOneAndDelete({ numeroGuia });
+
+    if (!eliminado) {
+      console.log("❌ No existe un paquete con ese númeroGuia");
+      return res.status(404).json({ message: "Paquete no encontrado" });
+    }
+
+    console.log("✅ Paquete eliminado:", eliminado);
+
+    res.json({ message: "Paquete eliminado correctamente", eliminado });
+
+  } catch (error) {
+    console.error("❌ Error al eliminar paquete:", error);
+    res.status(500).json({ message: "Error al eliminar el paquete" });
+  }
+};
+
 module.exports = {
   crearPaquete,
   obtenerPaquetes,
   obtenerPaquetePorId,
   actualizarEstadoPaquete,
-  obtenerPaquetePorNumeroGuia
+  obtenerPaquetePorNumeroGuia,
+  eliminarPaquete
 };
