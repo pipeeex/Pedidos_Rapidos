@@ -1,5 +1,6 @@
 const express = require('express');
 const Repartidor = require('../models/repartidor.model'); // sin .js está bien también
+const repartidoresController = require('../controllers/repartidores.controller.js');
 
 const router = express.Router();
 
@@ -24,5 +25,10 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: 'Error al crear repartidor', error });
   }
 });
+
+
+
+
+router.delete("/:identificacion", repartidoresController.eliminarRepartidor);
 
 module.exports = router;

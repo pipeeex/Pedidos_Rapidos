@@ -5,7 +5,8 @@ import {
   crearPaquete,
   crearRepartidor,
   actualizarEstadoPaquete,
-  eliminarPaquete, // ✅ Agrega esta función
+  eliminarPaquete, 
+  deleteRepartidor,
 } from "../services/api.js";
 import PaqueteForm from "../components/PaqueteForm.jsx";
 import PaquetesTable from "../components/PaquetesTable.jsx";
@@ -47,6 +48,7 @@ export default function AdminDashboard() {
     }
   };
 
+
   const handleCrearRepartidor = async (repartidor) => {
     try {
       await crearRepartidor(repartidor);
@@ -82,6 +84,20 @@ export default function AdminDashboard() {
       }
     }
   };
+
+      const handleDeleteRepartidor = async (identificacion) => {
+    if (!confirm("¿Seguro que deseas eliminar este repartidor?")) return;
+
+    try {
+      await deleteRepartidor(identificacion);
+      alert("🗑️ Repartidor eliminado correctamente");
+      cargarDatos(); // recarga todo (paquetes y repartidores)
+    } catch (error) {
+      console.error(error);
+      alert("❌ Error eliminando repartidor");
+    }
+  };
+
 
   if (loading)
     return (
@@ -146,6 +162,7 @@ export default function AdminDashboard() {
                     <th className="px-4 py-2 text-left">Teléfono</th>
                     <th className="px-4 py-2 text-left">Identificación</th>
                     <th className="px-4 py-2 text-left">Ubicación</th>
+                    <th className="px-4 py-2 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,6 +177,14 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-400">
                         lat: {r.ubicacion?.lat ?? 0}, lng: {r.ubicacion?.lng ?? 0}
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          onClick={() => handleDeleteRepartidor(r.identificacion)}
+                          className="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700 transition"
+                        >
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
                   ))}

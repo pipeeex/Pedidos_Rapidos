@@ -115,11 +115,35 @@ const eliminarPaquete = async (req, res) => {
   }
 };
 
+const eliminarRepartidor = async (req, res) => {
+  try {
+    const { identificacion } = req.params;
+
+    console.log("👉 Intentando eliminar repartidor con identificación:", identificacion);
+
+    const eliminado = await Repartidor.findOneAndDelete({ identificacion });
+
+    if (!eliminado) {
+      console.log("❌ No existe un repartidor con esa identificación");
+      return res.status(404).json({ message: "Repartidor no encontrado" });
+    }
+
+    console.log("✅ Repartidor eliminado:", eliminado);
+
+    res.json({ message: "Repartidor eliminado correctamente", eliminado });
+
+  } catch (error) {
+    console.error("❌ Error al eliminar repartidor:", error);
+    res.status(500).json({ message: "Error al eliminar el repartidor" });
+  }
+};
+
 module.exports = {
   crearPaquete,
   obtenerPaquetes,
   obtenerPaquetePorId,
   actualizarEstadoPaquete,
   obtenerPaquetePorNumeroGuia,
-  eliminarPaquete
+  eliminarPaquete,
+  eliminarRepartidor
 };

@@ -11,6 +11,7 @@ export default function RepartidoresTable({ repartidores }) {
           <th className="px-4 py-2 text-left">Teléfono</th>
           <th className="px-4 py-2 text-left">Identificación</th>
           <th className="px-4 py-2 text-left">Ubicación</th>
+          <th className="px-4 py-2 text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,15 @@ export default function RepartidoresTable({ repartidores }) {
               {r.ubicacion
                 ? `${r.ubicacion.lat}, ${r.ubicacion.lng}`
                 : "Sin ubicación"}
+            </td>
+
+            <td className="px-4 py-2 text-center">
+              <button
+                onClick={() => onDelete(r.identificacion)}
+                className="bg-red-600 px-3 py-1 rounded-lg hover:bg-red-700"
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         ))}

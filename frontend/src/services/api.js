@@ -22,6 +22,18 @@ export const eliminarPaquete = async (numeroGuia) => {
   return response.json();
 };
 
+export async function deleteRepartidor(identificacion) {
+  const res = await fetch(`http://localhost:5000/api/repartidores/${identificacion}`, {
+    method: "DELETE",
+  });
+
+if (!res.ok) {
+    throw new Error('Error al eliminar el paquete');
+  }
+
+  return res.json();
+}
+
 
 export async function crearPaquete(data) {
   const res = await fetch("http://localhost:5000/api/paquetes", {

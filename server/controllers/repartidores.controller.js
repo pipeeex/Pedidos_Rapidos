@@ -21,6 +21,31 @@ const obtenerUbicacionesRepartidores = async (req, res) => {
   }
 };
 
+const eliminarRepartidor = async (req, res) => {
+  try {
+    const { identificacion } = req.params;
+
+    console.log("🗑️ Eliminando repartidor con identificación:", identificacion);
+
+    const eliminado = await Repartidor.findOneAndDelete({ identificacion });
+
+    if (!eliminado) {
+      return res.status(404).json({ error: "Repartidor no encontrado" });
+    }
+
+    res.json({
+      message: "Repartidor eliminado correctamente",
+      eliminado
+    });
+
+  } catch (error) {
+    console.error("❌ Error al eliminar repartidor:", error);
+    res.status(500).json({ error: "Error al eliminar repartidor" });
+  }
+};
+
+
 module.exports = {
-  obtenerUbicacionesRepartidores
+  obtenerUbicacionesRepartidores,
+  eliminarRepartidor
 };
