@@ -1,4 +1,4 @@
-##Pedidos Rápidos – Sistema de Gestión y Rastreo de Paquetes##
+# Pedidos Rápidos – Sistema de Gestión y Rastreo de Paquetes
 
 Este proyecto es una aplicación web completa diseñada para la administración, gestión y rastreo de paquetes en tiempo real.
 Incluye un panel de administración para creación y control de paquetes y repartidores, y una interfaz para que los usuarios puedan consultar el estado de su pedido y ver la ubicación del repartidor asignado.
@@ -24,3 +24,22 @@ Características principales
 * Conexión a MongoDB con Mongoose.
 
 * Frontend moderno usando React + Vite + TailwindCSS.
+
+## Tecnologías Utilizadas
+
+### Back-end
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- CORS
+- Dotenv
+
+### Front-end
+- React
+- Vite
+- Axios
+- React Router DOM
+- TailwindCSS
+
+---
