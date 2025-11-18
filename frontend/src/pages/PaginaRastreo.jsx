@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { buscarPaquete } from "../services/api";
+import MapaRepartidorUnico from "../components/MapaRepartidorUnico";
 
 export default function PaginaRastreo() {
   const [codigo, setCodigo] = useState("");
@@ -10,7 +11,7 @@ export default function PaginaRastreo() {
     try {
       setError("");
       const data = await buscarPaquete(codigo);
-
+      console.log("Respuesta del paquete:", data);
       if (!data) throw new Error("No se encontró el paquete");
       setPaquete(data);
     } catch (err) {
@@ -111,7 +112,7 @@ export default function PaginaRastreo() {
           {paquete.repartidorAsignado && (
             <div className="mt-4">
               <h3 className="text-sky-400 font-semibold mb-1">
-                 Información del repartidor asignado
+                Información del repartidor asignado
               </h3>
               <p><b>Nombre:</b> {paquete.repartidorAsignado.nombre}</p>
               <p><b>Teléfono:</b> {paquete.repartidorAsignado.telefono}</p>
@@ -126,7 +127,20 @@ export default function PaginaRastreo() {
                 </p>
               )}
             </div>
+          )
+          }
+          {paquete.repartidorAsignado?.ubicacion && (
+            <div className="mt-6">
+              <h3 className="text-sky-400 font-semibold mb-2">
+                📍 Ubicación en tiempo real del repartidor
+              </h3>
+              <MapaRepartidorUnico
+                ubicacion={paquete.repartidorAsignado.ubicacion}
+                nombre={paquete.repartidorAsignado.nombre}
+              />
+            </div>
           )}
+
         </div>
       )}
     </div>
