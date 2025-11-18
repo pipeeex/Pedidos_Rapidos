@@ -1,13 +1,19 @@
-import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { useState } from "react";
+
 import PaginaRastreo from "./pages/PaginaRastreo";
 import AdminDashboard from "./pages/AdminDashboard";
+import LoginAdmin from "./pages/LoginAdmin";
+
 import "./App.css";
 
 export default function App() {
+  const [auth, setAuth] = useState(false);
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-neutral-900 text-white">
-        {/* Barra de navegación */}
+
         <nav className="flex gap-6 bg-neutral-800 px-6 py-4 shadow-md">
           <NavLink
             to="/"
@@ -19,6 +25,7 @@ export default function App() {
           >
             Rastreo
           </NavLink>
+
           <NavLink
             to="/admin"
             className={({ isActive }) =>
@@ -27,15 +34,26 @@ export default function App() {
               }`
             }
           >
-            Panel Admin    
+            Panel Admin
           </NavLink>
         </nav>
 
-        {/* Contenido principal */}
         <main className="p-10">
           <Routes>
             <Route path="/" element={<PaginaRastreo />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+
+            {/* Si NO está autenticado → mostrar LoginAdmin */}
+            <Route
+              path="/admin"
+              element={
+                auth ? (
+                  <AdminDashboard />
+                ) : (
+                  <LoginAdmin onLogin={() => setAuth(true)} />
+                )
+              }
+            />
+
             <Route
               path="*"
               element={
