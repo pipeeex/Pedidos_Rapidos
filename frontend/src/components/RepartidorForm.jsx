@@ -82,7 +82,7 @@ export default function RepartidorForm({ onSubmit }) {
         <input
           type="text"
           name="identificacion"
-          placeholder="Identificación (opcional, único)"
+          placeholder="Identificación"
           value={form.identificacion}
           onChange={handleChange}
           className="p-3 rounded bg-neutral-700 text-white placeholder-gray-400 focus:outline-none"
@@ -92,7 +92,7 @@ export default function RepartidorForm({ onSubmit }) {
           <input
             type="number"
             name="lat"
-            placeholder="Lat (opcional)"
+            placeholder="Lat "
             value={form.lat}
             onChange={handleChange}
             className="p-3 rounded bg-neutral-700 text-white placeholder-gray-400 focus:outline-none"
@@ -101,7 +101,7 @@ export default function RepartidorForm({ onSubmit }) {
           <input
             type="number"
             name="lng"
-            placeholder="Lng (opcional)"
+            placeholder="Lng "
             value={form.lng}
             onChange={handleChange}
             className="p-3 rounded bg-neutral-700 text-white placeholder-gray-400 focus:outline-none"
