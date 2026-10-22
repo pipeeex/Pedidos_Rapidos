@@ -1,3 +1,7 @@
+
+<img src="https://duolingo-api-five.vercel.app/user/svg/pirobo777" alt="Duolingo Streak" width=360 style="border-radius:16px;">
+
+
 # Pedidos Rápidos – Sistema de Gestión y Rastreo de Paquetes
 
 Este proyecto es una aplicación web completa diseñada para la administración, gestión y rastreo de paquetes en tiempo real.
